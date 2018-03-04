@@ -1,0 +1,35 @@
+{
+  "name": "vueify-simple",
+  "version": "0.0.0",
+  "description": "Super simple browserify transform for Vue components. No magic.",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard",
+    "build-example": "browserify -t ./index.js example/app.js -o example/app.bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaxGfeller/vueify-simple.git"
+  },
+  "keywords": [
+    "browserify",
+    "transform",
+    "vue",
+    "vueify"
+  ],
+  "author": "Max Gfeller <max.gfeller@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaxGfeller/vueify-simple/issues"
+  },
+  "homepage": "https://github.com/MaxGfeller/vueify-simple#readme",
+  "dependencies": {
+    "replace-string": "^1.1.0",
+    "through2": "^2.0.3"
+  },
+  "devDependencies": {
+    "browserify": "^16.1.0",
+    "standard": "^11.0.0",
+    "vue": "^2.5.13"
+  }
+}
