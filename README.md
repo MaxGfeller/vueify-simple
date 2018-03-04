@@ -2,8 +2,9 @@
 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-This is a super simple browserify transform for Vue components. There is no support
-for styles, currently, but it's planned for a future version of this module.
+This is a super simple [browserify](http://browserify.org/) transform for
+[Vue components](https://vuejs.org/). There is no support for styles yet but
+it's planned for a future version.
 
 ## Why?
 
