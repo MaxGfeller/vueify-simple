@@ -21,10 +21,11 @@ module.exports = function (file) {
       return this.push(contents)
     }
 
+    var templateString = templateResult ? `template: "${parseTemplateString(templateResult[1])}",` : ''
+
     var firstPart = scriptResult[1].substring(0, (exportResult.index + exportResult[1].length))
-    var templateAddition = `template: "${parseTemplateString(templateResult[1])}",`
     var lastPart = scriptResult[1].substring((exportResult.index + exportResult[1].length) + 1)
-    this.push(firstPart + templateAddition + lastPart)
+    this.push(firstPart + templateString + lastPart)
 
     next()
   })
