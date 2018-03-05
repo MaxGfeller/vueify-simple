@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/MaxGfeller/vueify-simple#readme",
   "dependencies": {
+    "apply-css": "^1.0.3",
+    "insert-css": "^2.0.0",
     "replace-string": "^1.1.0",
     "through2": "^2.0.3"
   },
