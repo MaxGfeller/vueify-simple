@@ -1,6 +1,6 @@
 {
   "name": "vueify-simple",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Super simple browserify transform for Vue components. No magic.",
   "main": "index.js",
   "scripts": {
