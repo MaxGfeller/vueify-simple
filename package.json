@@ -4,8 +4,7 @@
   "description": "Super simple browserify transform for Vue components. No magic.",
   "main": "index.js",
   "scripts": {
-    "test": "standard",
-    "build-example": "browserify -t ./index.js example/app.js -o example/app.bundle.js"
+    "test": "standard"
   },
   "repository": {
     "type": "git",
