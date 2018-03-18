@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build": "browserify app.js -o app.bundle.js -t ../../index.js -t [ babelify --presets [ es2015 ] --extensions .js,.vue ]"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^8.0.0"
+  }
+}
