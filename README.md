@@ -26,10 +26,8 @@ browserify -t vueify-simple app.js -o app.bundle.js
 
 ## Example
 
-There is an example Vue application in the `example/` folder.
-
-To build it you can run `npm run build-example`. Just open the `index.html` file
-afterwards.
+There are various examples (more coming soon!) in the folder `examples/` on how
+`vueify-simple` can be used.
 
 ## Limitations
 
