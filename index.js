@@ -1,5 +1,7 @@
 const through = require('through2')
 const replaceAll = require('replace-string')
+const cuid = require('cuid')
+const { parseCSS } = require('apply-css')
 
 module.exports = function (file) {
   if (!/.vue$/.test(file)) {
@@ -22,7 +24,8 @@ module.exports = function (file) {
       return this.push(contents)
     }
 
-    var templateString = templateResult ? `template: "${parseTemplateString(templateResult[1])}",` : ''
+    var templateString = templateResult
+      ? `template: "${parseTemplateString(templateResult[1])}",` : ''
 
     var firstPart = scriptResult[1].substring(0, (exportResult.index + exportResult[1].length))
     var lastPart = scriptResult[1].substring((exportResult.index + exportResult[1].length) + 1)
@@ -30,7 +33,14 @@ module.exports = function (file) {
     if (styleResult) {
       // at the moment only proper css is supported
       if (!styleResult[2] || styleResult[2] === 'css') {
-        lastPart += `\n\nrequire('insert-css')('${styleResult[4].split('\n').join('\\n')}')`
+        if (!styleResult[3]) {
+          lastPart += `\n\nrequire('insert-css')('${styleResult[4].split('\n').join('\\n')}')`
+        } else {
+          var insertAtPos = templateString.indexOf('>')
+          var id = cuid.slug()
+          templateString = templateString.substring(0, insertAtPos) + ` data-scoped-css=\\"${id}\\"` + templateString.substring(insertAtPos)
+          lastPart += `\n\nrequire('insert-css')('${parseCSS(id, styleResult[4]).split('\n').join('\\n')}')`
+        }
       }
     }
 
