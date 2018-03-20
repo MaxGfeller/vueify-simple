@@ -32,8 +32,9 @@ There are various examples (more coming soon!) in the folder `examples/` on how
 ## Limitations
 
 For now, the functionality of this module is heavily limited. It only works on
-plain HTML `<template>`s and normal JavaScript. `<style>` tags are not yet
-supported.
+plain HTML `<template>`s and normal JavaScript. `<style>` tags are
+supported but for now they have to be in CSS. Support for SASS etc. will come
+soon!
 
 If you want to contribute to this module, feel free to open an issue or submit
 a pull request. Any help is appreciated.
