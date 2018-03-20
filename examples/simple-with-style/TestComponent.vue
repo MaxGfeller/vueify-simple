@@ -9,7 +9,7 @@
   }
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 .title {
   color: red;
 }
