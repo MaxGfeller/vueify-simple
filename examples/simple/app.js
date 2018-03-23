@@ -1,7 +1,8 @@
 const Vue = require('vue/dist/vue.common.js')
 const TestComponent = require('./TestComponent.vue')
 
-const app = new Vue({
+// eslint-disable-next-line
+new Vue({
   el: '#container',
   components: {
     'app': TestComponent
