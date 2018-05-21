@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "build": "browserify -t ../../index.js app.js -o app.bundle.js"
+  }
+}
