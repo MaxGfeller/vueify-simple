@@ -28,6 +28,7 @@ module.exports = function (file) {
       ? parseTemplateString(templateResult[1]) : ''
 
     // scoped style, set scoped attribute
+    var scopedDataId = null
     if (styleResult && styleResult[3]) {
       var insertAtPos = templateString.indexOf('>')
       scopedDataId = cuid.slug()
@@ -39,7 +40,6 @@ module.exports = function (file) {
     // the js component
     var placeHolderIndex = scriptResult[1].indexOf('__TEMPLATE__')
     var scriptContents = ''
-    var scopedDataId = null
 
     if (placeHolderIndex > -1) {
       scriptContents = scriptResult[1].replace('__TEMPLATE__', templateString)
