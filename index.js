@@ -8,13 +8,11 @@ const { parseCSS } = require('apply-css')
 const emptyComponent = 'module.exports = {}'
 
 module.exports = function (file) {
-  console.log('apply for', file)
   if (!/.vue$/.test(file)) {
     return through()
   }
 
   return through(function (buf, enc, next) {
-    console.log('processing', file)
     var contents = buf.toString('utf8')
 
     var templateResult = /<template>([\w\W]*)<\/template>/g.exec(contents)
