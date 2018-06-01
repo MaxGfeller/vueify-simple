@@ -25,7 +25,7 @@ module.exports = function (file) {
     if (!scriptResult) {
       scriptResult = emptyComponent
     } else {
-      scriptResult = scriptResult[2]
+      scriptResult = scriptResult[1]
     }
 
     var templateString = templateResult
