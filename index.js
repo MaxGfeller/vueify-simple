@@ -4,10 +4,12 @@ const through = require('through2')
 const replaceAll = require('replace-string')
 const cuid = require('cuid')
 const { parseCSS } = require('apply-css')
+const { SourceMapGenerator } = require('source-map')
+const convert = require('convert-source-map')
 
 const emptyComponent = 'module.exports = {}'
 
-module.exports = function (file) {
+module.exports = function (file, opts) {
   if (!/.vue$/.test(file)) {
     return through()
   }
@@ -17,14 +19,30 @@ module.exports = function (file) {
 
     var templateResult = /<template>([\w\W]*)<\/template>/g.exec(contents)
     var scriptResult = /<script>([\w\W]*)<\/script>/g.exec(contents)
+
     var styleResult = /<style([ ]*lang="([a-zA-Z]*)")?([ ]*scoped)?>([\w\W]*?)<\/style>/g.exec(contents)
+    var map = null
+
+    var parts = file.split('/')
+    // TODO: parse extension from lang="" attribute in script tag
+    var tmpFilePath = getTmpFilePath(parts[parts.length - 1] + '.js')
 
     // If there is no script present, create an empty wrapper component
     if (!scriptResult) {
       scriptResult = emptyComponent
     } else {
+      var index = scriptResult.index
+      var linesBefore = contents.substring(0, index).split('\n')
       scriptResult = scriptResult[1]
+
+      // create source map
+      if (opts._flags.debug === true) {
+        map = createSourceMap(file, tmpFilePath, scriptResult, contents, linesBefore.length - 1)
+        scriptResult += '\n' + convert.fromJSON(map.toString()).toComment()
+      }
     }
+
+    fs.writeFileSync(tmpFilePath, scriptResult)
 
     var templateString = templateResult
       ? parseTemplateString(templateResult[1]) : ''
@@ -36,11 +54,6 @@ module.exports = function (file) {
       scopedDataId = cuid.slug()
       templateString = templateString.substring(0, insertAtPos) + ` data-scoped-css=\\"${scopedDataId}\\"` + templateString.substring(insertAtPos)
     }
-
-    var parts = file.split('/')
-    // TODO: parse extension from lang="" attribute in script tag
-    var tmpFilePath = getTmpFilePath(parts[parts.length - 1] + '.js')
-    fs.writeFileSync(tmpFilePath, scriptResult)
 
     var wrapperContent = `var content = require('./${tmpFilePath}')\n`
     wrapperContent += `content.template = '${templateString}'\n`
@@ -92,4 +105,22 @@ function getTmpFilePath (fileName) {
   var fileNameWithoutExt = fileNameParts.join('')
   var tmpFileName = `${fileNameWithoutExt}-${Date.now()}-${Math.floor(Math.random() * 1000)}.${ext}`
   return path.relative(__dirname, path.join(__dirname, tmpFileName))
+}
+
+function createSourceMap (sourceFilePath, tmpFilePath, scriptContents, sourceFileContents, offset) {
+  var map = new SourceMapGenerator({
+    file: tmpFilePath
+  })
+
+  var lines = scriptContents.split('\n')
+  lines.map((line, i) => {
+    map.addMapping({
+      source: sourceFilePath,
+      original: { line: i + 1 + offset, column: 0 },
+      generated: { line: i + 1, column: 0 }
+    })
+  })
+
+  map.setSourceContent(sourceFilePath, sourceFileContents)
+  return map
 }
