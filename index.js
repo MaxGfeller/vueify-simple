@@ -6,6 +6,7 @@ const cuid = require('cuid')
 const { parseCSS } = require('apply-css')
 const { SourceMapGenerator } = require('source-map')
 const convert = require('convert-source-map')
+const { promisify } = require('util')
 
 const emptyComponent = 'module.exports = {}'
 
@@ -68,24 +69,10 @@ module.exports = function (file, opts) {
       }
     }
 
-    var { atimeMs } = fs.statSync(tmpFilePath)
-
     this.push(wrapperContent)
     next()
 
-    var rmInterval = setInterval(() => {
-      var stat = null
-      try {
-        stat = fs.statSync(tmpFilePath)
-      } catch (e) {
-        if (rmInterval) clearInterval(rmInterval)
-        return
-      }
-      if (stat.atimeMs === atimeMs) return
-
-      clearInterval(rmInterval)
-      fs.unlink(tmpFilePath, () => {})
-    }, 200)
+    deleteAfterRead(tmpFilePath)
   })
 }
 
@@ -123,4 +110,24 @@ function createSourceMap (sourceFilePath, tmpFilePath, scriptContents, sourceFil
 
   map.setSourceContent(sourceFilePath, sourceFileContents)
   return map
+}
+
+function deleteAfterRead (path) {
+  return new Promise(async (resolve) => {
+    var { atimeMs } = await promisify(fs.stat)(path)
+
+    var rmInterval = setInterval(async () => {
+      var stat = null
+      try {
+        stat = await promisify(fs.stat)(path)
+      } catch (e) {
+        if (rmInterval) clearInterval(rmInterval)
+        return
+      }
+      if (stat.atimeMs === atimeMs) return
+
+      clearInterval(rmInterval)
+      fs.unlink(path, () => {})
+    }, 200)
+  })
 }
