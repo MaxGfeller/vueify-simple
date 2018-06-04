@@ -18,14 +18,14 @@ module.exports = function (file, opts) {
     var contents = buf.toString('utf8')
 
     var templateResult = /<template>([\w\W]*)<\/template>/g.exec(contents)
-    var scriptResult = /<script>([\w\W]*)<\/script>/g.exec(contents)
+    var scriptResult = /<script([ ]*lang="([a-zA-Z]*)" *)?>([\w\W]*)<\/script>/g.exec(contents)
 
     var styleResult = /<style([ ]*lang="([a-zA-Z]*)")?([ ]*scoped)?>([\w\W]*?)<\/style>/g.exec(contents)
     var map = null
 
     var parts = file.split('/')
-    // TODO: parse extension from lang="" attribute in script tag
-    var tmpFilePath = getTmpFilePath(parts[parts.length - 1] + '.js')
+    var ext = scriptResult[2] || 'js'
+    var tmpFilePath = getTmpFilePath(parts[parts.length - 1] + `.${ext}`)
 
     // If there is no script present, create an empty wrapper component
     if (!scriptResult) {
@@ -33,7 +33,7 @@ module.exports = function (file, opts) {
     } else {
       var index = scriptResult.index
       var linesBefore = contents.substring(0, index).split('\n')
-      scriptResult = scriptResult[1]
+      scriptResult = scriptResult[3]
 
       // create source map
       if (opts._flags.debug === true) {
